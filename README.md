@@ -11,7 +11,7 @@ Depending on the case you can have:
 # Input
 
 - Tiff image with the **required bands** to calculate the desired index.
-- Tiff image with a water recognition index (NDVI, NDWI, etc) already applied.
+- Tiff image with a water recognition index (NDVI, NDWI, etc) **already** applied.
 
 # Output
 
@@ -20,13 +20,15 @@ Depending on the case you can have:
 
 # Usage
 
-The plugins consists on a simple GUI to select the desired water recognition index or threshold you want to calculate on your raster image following the next steps:
+The plugins consists on a simple GUI to select the desired water recognition index or threshold you want to calculate on your raster image:
 
 1. Select the input raster image
 2. Select the checkboxes for the indices you want to apply on the input image and/or the threshold for reclassification
-3. If you select custom threshold value for any of the indices you can use the spin widget to increase or decrease this value
-4. Select an output folder path where the generated images will be saved (if you leave this filed empty the images will be generated as temporary layers which you can export later)
-5. Click the run button to start the process
+   - If you select custom threshold value for any of the indices you can use the spin widget to increase or decrease this value
+3. Select an output folder path where the generated images will be saved (if you leave this filed empty the images will be generated as temporary layers which you can export later)
+4. Click the run button to start the process
+
+![GUI Elements](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Plugin_gui_elements.png)
 
 # Example
 
@@ -37,26 +39,45 @@ The plugins consists on a simple GUI to select the desired water recognition ind
 
 1. Open the image on QGIS by dragging the image to the layers panel
 2. Go to **Raster** menu and select the **Water Recognition Indices** option and select the plugin
+
+![Example 1 Raster menu](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Ejemplo+1/Plugin_example1_raster_menu.png)
+
 3. Select the raster input in the combobox
 4. Select the NDVI and WRI options as well as the custom threshold options for these indices
 5. Change the value for the NDVI threshold to 0.1 and the WRI threshold to 1.0 (these values are just for testing the reclassification process)
 6. Select the output folder by clicking the **...** button in the _Select output folder_ section of the plugin
 7. Click the **Run** button and wait for the process to finish
+
+![Example 1 Setup](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Ejemplo+1/Plugin_example_1_setup.png)
+
 8. As a result we have 4 generated images (2 for each water recognition index and 2 for each threshold reclassification) named according to their corresponding index and/or threshold value saved on the select output folder.
 
-# Satellite image previous index applied
+![Example 1 output NDVI](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Ejemplo+1/Plugin_example1_NDVI.png)
+![Example 1 output NDVI threshold](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Ejemplo+1/Plugin_example1_NDVI_threshold_01.png)
+![Example 1 output WRI](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Ejemplo+1/Plugin_example1_WRI.png)
+![Example 1 output WRI threshold](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Ejemplo+1/Plugin_example1_WRI_threshold_1.png)
+
+# Satellite image with previous index applied
 
 - In this example we will apply a reclassification process to a Landsat 8 image (downloaded from Google Earth Engine) with NDVI index already applied.
 - You can use the **Huallaga_NDVI.tif** image provided in the github reporsitory or any other image with index applied
 
 1. Open the image on QGIS by dragging the image to the layers panel
 2. Go to **Raster** menu and select the **Water Recognition Indices** option and select the plugin
+
+![Example 2 Raster menu](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Ejemplo+2/Plugin_example2_raster_menu.png)
+
 3. Select the raster input in the combobox
 4. Select **only** the **Custom NDVI threshold** option
 5. Change the value for the NDVI threshold to 0.1 (this value is just for testing the reclassification process)
 6. Select the output folder by clicking the **...** button in the _Select output folder_ section of the plugin
 7. Click the **Run** button and wait for the process to finish
+
+![Example 2 setup](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Ejemplo+2/Plugin_example2_setup.png)
+
 8. As a result we have a reclassified image named according to the corresponding threshold value saved on the select output folder.
+
+![Example 2 output NDVI threshold](https://cita-dancing-rivers.s3.us-east-2.amazonaws.com/Water+recognition+indices+plugin/Ejemplo+2/Plugin_example2_NDVI_threshold_01.png)
 
 Notice that we could have selected any other index or threshold option for this example, but since the image had the NDVI index already applied it wouldn't make much sense to apply NDWI or WRI index calculation and/or followed by a reclassification step.
 

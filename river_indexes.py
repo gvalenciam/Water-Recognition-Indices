@@ -328,10 +328,12 @@ class RiverIndexes:
             else:
                 outputFolder = self.dlg.output_lineEdit.text()
 
+            # get raster layer from Qgis
+            image = gdal.Open(self.layersData[self.dlg.layers_comboBox.currentIndex(
+            )].dataProvider().dataSourceUri())
+
             if (index["selected"]):
-                # get raster layer from Qgis
-                image = gdal.Open(self.layersData[self.dlg.layers_comboBox.currentIndex(
-                )].dataProvider().dataSourceUri())
+
                 imageArray = image.GetRasterBand(1).ReadAsArray()
                 imagePath = outputFolder + '/' + layerName + \
                     '_' + index["indexName"] + '.tif'
@@ -344,9 +346,16 @@ class RiverIndexes:
                 self.dlg.progressBar.setValue(
                     self.dlg.progressBar.value() + self.singleIndexProgressValue)
 
-                if (self.getThresholdCheckbox(self.indexes.index(index)).isChecked()):
+            if (self.getThresholdCheckbox(self.indexes.index(index)).isChecked()):
+                if (index["selected"]):
                     imageReclassifiedArray = self.reclassify(
                         imagePath, index["threshold"])
+                    self.createTiffFromArray(image, imageReclassifiedArray, outputFolder + '/' + layerName + '_' +
+                                             index["indexName"] + '_' + str(index["threshold"]) + '.tif', layerName + '_' + index["indexName"] + '_' + str(index["threshold"]) + '.tif')
+                else:
+                    imageReclassifiedArray = self.reclassify(
+                        self.layersData[self.dlg.layers_comboBox.currentIndex(
+                        )].dataProvider().dataSourceUri(), index["threshold"])
                     self.createTiffFromArray(image, imageReclassifiedArray, outputFolder + '/' + layerName + '_' +
                                              index["indexName"] + '_' + str(index["threshold"]) + '.tif', layerName + '_' + index["indexName"] + '_' + str(index["threshold"]) + '.tif')
 
