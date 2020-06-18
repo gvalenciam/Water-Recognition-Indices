@@ -314,47 +314,6 @@ class RiverIndexes:
         imageArray[np.where(imageArray >= threshold)] = 1.0
         return imageArray
 
-        # self.dlg.cancel_pushButton.setEnabled(True)
-        # layerName = self.layersNames[self.dlg.layers_comboBox.currentIndex()]
-        # self.dlg.progressBar.setValue(5)
-
-        # for index in self.indexes:
-        #     if (index["selected"]):
-        # ds = gdal.Open(self.layersData[self.dlg.layers_comboBox.currentIndex(
-        # )].dataProvider().dataSourceUri())
-        # dem_arr = ds.GetRasterBand(1).ReadAsArray()
-        #         dem_arr[np.where(dem_arr < index["threshold"])] = 0.0
-        #         dem_arr[np.where(dem_arr >= index["threshold"])] = 1.0
-        #         driver = gdal.GetDriverByName('GTiff')
-
-        # if (self.dlg.output_lineEdit.text() == ''):
-        #     outputFolder = tempfile.TemporaryDirectory()
-        # else:
-        #     outputFolder = self.dlg.output_lineEdit.text()
-
-        #         output = driver.Create(outputFolder + '/' + layerName + '_' + index["indexName"] + '_' + str(
-        #             index["threshold"]) + '.tif', ds.RasterXSize, ds.RasterYSize, 1, eType=gdal.GDT_Float32)
-        #         output.GetRasterBand(1).WriteArray(dem_arr)
-        #         output.SetGeoTransform(ds.GetGeoTransform())
-        #         output.SetProjection(ds.GetProjection())
-        #         output = None
-
-        #         rasterLayer = QgsRasterLayer(
-        #             outputFolder + '/' + layerName + '_' + index["indexName"] + '_' + str(index["threshold"]) + '.tif', layerName + '_' + index["indexName"] + '_' + str(index["threshold"]))
-        #         if not rasterLayer.isValid():
-        #             print("Layer failed to load!")
-        #         else:
-        #             QgsProject.instance().addMapLayer(rasterLayer)
-
-        # self.dlg.progressBar.setValue(
-        #     self.dlg.progressBar.value() + self.singleIndexProgressValue)
-
-        # if (self.dlg.ndvi_checkBox.isChecked() or self.dlg.ndwi_checkBox.isChecked() or self.dlg.wri_checkBox.isChecked()):
-        #     self.iface.messageBar().pushMessage("Success", "Layer(s) created at " +
-        #                                         outputFolder, level=Qgis.Success, duration=3)
-        # self.dlg.progressBar.setValue(100)
-        # self.dlg.cancel_pushButton.setEnabled(False)
-
     def startScript(self):
 
         self.dlg.cancel_pushButton.setEnabled(True)
@@ -440,9 +399,9 @@ class RiverIndexes:
             if (layer.layer().type() == 1):
                 self.layersNames.append(layer.layer().name())
                 self.layersData.append(layer.layer())
+
         self.dlg.layers_comboBox.clear()
         self.dlg.layers_comboBox.addItems(self.layersNames)
-        # self.dlg.run_pushButton.clicked.connect(self.reclassify)
         self.dlg.run_pushButton.clicked.connect(self.startScript)
 
         self.dlg.show()
