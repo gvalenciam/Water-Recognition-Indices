@@ -313,18 +313,15 @@ class RiverIndexes:
     def checkboxSelected(self, checkbox, indice):
         self.indexes[indice]["selected"] = True if (
             checkbox.isChecked()) else False
-        # print(self.indexes)
 
     def thresholdCheckboxSelected(self, checkbox, spinboxToEnable, indice):
         spinboxToEnable.setEnabled(True) if checkbox.isChecked(
         ) else spinboxToEnable.setEnabled(False)
         self.indexes[indice]["threshold"] = spinboxToEnable.value() if checkbox.isChecked(
         ) else 0.5
-        # print(self.indexes)
 
     def spinboxValueChanged(self, spinbox, indice):
         self.indexes[indice]["threshold"] = spinbox.value()
-        # print(self.indexes)
 
     def select_output_file(self):
         dialog = QFileDialog()
@@ -444,8 +441,6 @@ class RiverIndexes:
                                 self.dlg.progressBar.value() + self.singleIndexProgressValue)
                             self.processCounter += 1
 
-            print(self.processCounter)
-
             if (self.processCounter > 0):
                 pass
             elif (self.processCounter == 0):
@@ -467,7 +462,6 @@ class RiverIndexes:
                 "Warning: No raster layer available", "Add a raster layer to your project", 2, True, False)
 
     def endAllProcesses(self):
-        print("A")
         self.processCounter = -1
         self.dlg.progressBar.setValue(0)
         self.dlg.cancel_pushButton.setEnabled(False)
