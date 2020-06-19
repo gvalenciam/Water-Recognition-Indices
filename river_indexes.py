@@ -28,7 +28,6 @@ from qgis.PyQt.QtGui import QIcon
 from qgis.PyQt.QtWidgets import QAction, QFileDialog, QMessageBox
 from osgeo import gdal
 import numpy as np
-import tempfile
 import time
 
 # Initialize Qt resources from file resources.py
@@ -43,6 +42,16 @@ class RiverIndexes:
     """QGIS Plugin Implementation."""
 
     def showModalDialog(self, dialogTitle, dialogDescription, iconFlag, okButtonFlag, cancelButtonFlag):
+
+        # Shows a modal dialog with title and description
+
+        # Parameters:
+        #    dialogTitle: Dialog title
+        #    dialogDescription: Dialog description
+        #    iconFlag: Integer to select the type of icon for the dialog
+        #    okButtonFlag: Boolean to show or not the ok button on the dialog
+        #    cancelButtonFlag: Boolean to show or not the cancel button on the dialog
+
         modalDialog = QMessageBox()
 
         # icon flag, 0: question, 1: information, 2: warning, 3: critical
@@ -73,9 +82,18 @@ class RiverIndexes:
             self.endAllProcesses()
 
     def calculateNDVI(image, landsatSatellite):
-        # Landsat Satellite
-        # 0 : Landsat 8
-        # 1 : Landsat 7/5
+
+        # Calculates NDVI index for the input image
+
+        # Parameters:
+        #    image: Input image
+        #    landsatSatellite: Integer to select the Landsat satellite
+        #       0 : Landsat 8
+        #       1 : Landsat 7/5
+
+        # Returns:
+        #   NDVI Numpy array if image is multi band
+        #   -1 if image is single band
 
         if (image.RasterCount > 1):
             if (landsatSatellite == 0):
@@ -92,9 +110,19 @@ class RiverIndexes:
             return -1
 
     def calculateNDWI(image, landsatSatellite):
-        # Landsat Satellite
-        # 0 : Landsat 8
-        # 1 : Landsat 7/5
+
+        # Calculates NDWI index for the input image
+
+        # Parameters:
+        #    image: Input image
+        #    landsatSatellite: Integer to select the Landsat satellite
+        #       0 : Landsat 8
+        #       1 : Landsat 7/5
+
+        # Returns:
+        #   NDWI Numpy array if image is multi band
+        #   -1 if image is single band
+
         if (image.RasterCount > 1):
             if (landsatSatellite == 0):
                 nir = image.GetRasterBand(5).ReadAsArray()
@@ -110,9 +138,18 @@ class RiverIndexes:
             return -1
 
     def calculateWRI(image, landsatSatellite):
-        # Landsat Satellite
-        # 0 : Landsat 8
-        # 1 : Landsat 7/5
+
+        # Calculates WRI index for the input image
+
+        # Parameters:
+        #    image: Input image
+        #    landsatSatellite: Integer to select the Landsat satellite
+        #       0 : Landsat 8
+        #       1 : Landsat 7/5
+
+        # Returns:
+        #   WRI Numpy array if image is multi band
+        #   -1 if image is single band
 
         if (image.RasterCount > 1):
             if (landsatSatellite == 0):
@@ -156,6 +193,7 @@ class RiverIndexes:
     layersNames = []
     layersData = []
     outputFolder = ''
+    imagePath = ''
     singleIndexProgressValue = 0
     maxNumberOfProcesses = 6
     processCounter = 0
@@ -303,6 +341,18 @@ class RiverIndexes:
             self.iface.removeToolBarIcon(action)
 
     def getThresholdCheckbox(self, indice):
+
+        # Gets the threshold checkbox corresponding to integer 'indice'
+
+        # Parameters:
+        #    indice: Integer corresponding to a checkbox
+        #       0 : NDVI threshold checkbox
+        #       1 : NDWI threshold checkbox
+        #       2 : WRI threshold checkbox
+
+        # Returns:
+        #   Corresponding threshold checkbox
+
         if (indice == 0):
             return self.dlg.ndvi_threshold_checkBox
         elif (indice == 1):
@@ -311,19 +361,53 @@ class RiverIndexes:
             return self.dlg.wri_threshold_checkBox
 
     def checkboxSelected(self, checkbox, indice):
+
+        # Changes the selected status for the corresponding index JSON object of the 'indexes' variable
+
+        # Parameters:
+        #    checkbox: Index checkbox to verify checked status
+        #    indice:
+        #       0 : NDVI index checkbox
+        #       1 : NDWI index checkbox
+        #       2 : WRI index checkbox
+
         self.indexes[indice]["selected"] = True if (
             checkbox.isChecked()) else False
 
     def thresholdCheckboxSelected(self, checkbox, spinboxToEnable, indice):
+
+        # Updates the threshold field for the corresponding element in the 'indexes' variable
+
+        # Parameters:
+        #    checkbox: Threshold checkbox to verify checked status
+        #    spinboxToEnable: Spin box to be enabled in case corresponding checkbox is selected
+        #    indice:
+        #       0 : NDVI threshold checkbox
+        #       1 : NDWI threshold checkbox
+        #       2 : WRI threshold checkbox
+
         spinboxToEnable.setEnabled(True) if checkbox.isChecked(
         ) else spinboxToEnable.setEnabled(False)
         self.indexes[indice]["threshold"] = spinboxToEnable.value() if checkbox.isChecked(
         ) else 0.5
 
     def spinboxValueChanged(self, spinbox, indice):
+
+        # Updates the threshold field for the corresponding element in the 'indexes' variable
+
+        # Parameters:
+        #    spinbox: Spin box that triggers the value changed event
+        #    indice:
+        #       0 : NDVI JSON element
+        #       1 : NDWI JSON element
+        #       2 : WRI JSON element
+
         self.indexes[indice]["threshold"] = spinbox.value()
 
     def select_output_file(self):
+
+        # Creates the dialog to select the output folder and updates the 'output path' text field
+
         dialog = QFileDialog()
         dialog.setFileMode(QFileDialog.Directory)
         dialog.exec()
@@ -332,6 +416,16 @@ class RiverIndexes:
             self.dlg.output_lineEdit.setText(outputFolder)
 
     def createTiffFromArray(self, image, array, outputPath, imageName):
+
+        # Creates raster layer from numoy array and saves it in the outputPath parameter with imageName as file name.
+        # After creation the image is opened and added to the layers panel if it is a valid image
+
+        # Parameters:
+        #    image: Base image to get the SetGeoTransform and SetProjection values
+        #    array: input numpy array to generate image
+        #    outputPath: path for the new generated image
+        #    imageName: Name for the new generated image
+
         driver = gdal.GetDriverByName('GTiff')
         output = driver.Create(outputPath, image.RasterXSize,
                                image.RasterYSize, 1, eType=gdal.GDT_Float32)
@@ -347,6 +441,16 @@ class RiverIndexes:
 
     def reclassify(self, path, threshold):
 
+        # Reclassifies image located in path for the given threshold
+
+        # Parameters:
+        #    path: Image to reclassify location
+        #    threshold: value for the reclassification
+
+        # Returns:
+        #   Reclassified numpy array if the image is single banded
+        #   -1 if the image is multi banded
+
         image = gdal.Open(path)
 
         if (image.RasterCount == 1):
@@ -360,108 +464,96 @@ class RiverIndexes:
 
     def startScript(self):
 
+        # Entire process plugin function
+
+        # Steps:
+        #   Check if there is at least one raster layer available in the project otherwise a warning dialog pops
+        #   Check if the output folder has been selected otherwise a warning dialog pops
+        #   Check if any option (index or threshold) is selected otherwise a warning dialog pops
+        #   For each JSON object in the 'indexes' variable:
+        #       Opens the image selected in the combobox and
+        #           If index checkbox is selected calculates the corresponding index
+        #           If index checkbox is not selected but threshold checkbox is, reclassifies the image
+        #           For any of these cases a new image or images are generated and added to the layers panel
+        #   If at least one image is generated a success message box is shown with the location of the generated images as description
+
         self.dlg.cancel_pushButton.setEnabled(True)
         self.processCounter = 0
 
         if (self.dlg.layers_comboBox.currentIndex() != -1):
 
             self.dlg.progressBar.setValue(5)
+
             if (self.dlg.output_lineEdit.text() == ''):
-                outputFolder = tempfile.TemporaryDirectory()
+                self.showModalDialog("Warning: No output folder selected",
+                                     "Please select an output folder for the images", 2, True, False)
             else:
                 outputFolder = self.dlg.output_lineEdit.text()
-
-            for index in self.indexes:
                 layerName = self.layersNames[self.dlg.layers_comboBox.currentIndex(
                 )]
 
-                # get raster layer from Qgis
-                image = gdal.Open(self.layersData[self.dlg.layers_comboBox.currentIndex(
-                )].dataProvider().dataSourceUri())
+                for index in self.indexes:
 
-                if (index["selected"] and self.processCounter >= 0):
+                    image = gdal.Open(self.layersData[self.dlg.layers_comboBox.currentIndex(
+                    )].dataProvider().dataSourceUri())
 
-                    imageArray = image.GetRasterBand(1).ReadAsArray()
+                    if (index["selected"] and self.processCounter >= 0):
 
-                    if (self.dlg.output_lineEdit.text() == ''):
-                        imagePath = outputFolder.name + '/' + layerName + \
-                            '_' + index["indexName"] + '.tif'
-                    else:
-                        imagePath = outputFolder + '/' + layerName + \
-                            '_' + index["indexName"] + '.tif'
+                        self.imagePath = outputFolder + '/' + \
+                            layerName + '_' + index["indexName"] + '.tif'
+                        newImageName = layerName + '_' + index["indexName"]
+                        indexImageArray = index["function"](image, 0)
 
-                    newImageName = layerName + '_' + index["indexName"]
-
-                    indexImageArray = index["function"](image, 0)
-
-                    if (not type(indexImageArray) is np.ndarray):
-                        self.showModalDialog(
-                            "Warning: Input image is single banded", "Check if the inout image has the required bands for the index", 2, True, False)
-                    else:
-                        self.createTiffFromArray(
-                            image, indexImageArray, imagePath, newImageName)
-
-                        self.dlg.progressBar.setValue(
-                            self.dlg.progressBar.value() + self.singleIndexProgressValue)
-
-                        self.processCounter += 1
-
-                if (self.getThresholdCheckbox(self.indexes.index(index)).isChecked() and self.processCounter >= 0):
-                    if (index["selected"]):
-                        imageReclassifiedArray = self.reclassify(
-                            imagePath, index["threshold"])
-
-                        if(not type(imageReclassifiedArray) is np.ndarray):
+                        if (not type(indexImageArray) is np.ndarray):
                             self.showModalDialog(
                                 "Warning: Input image is single banded", "Check if the inout image has the required bands for the index", 2, True, False)
                         else:
-                            if (self.dlg.output_lineEdit.text() == ''):
-                                self.createTiffFromArray(image, imageReclassifiedArray, outputFolder.name + '/' + layerName + '_' +
-                                                         index["indexName"] + '_' + str(index["threshold"]) + '.tif', layerName + '_' + index["indexName"] + '_' + str(index["threshold"]) + '.tif')
-                            else:
-                                self.createTiffFromArray(image, imageReclassifiedArray, outputFolder + '/' + layerName + '_' +
-                                                         index["indexName"] + '_' + str(index["threshold"]) + '.tif', layerName + '_' + index["indexName"] + '_' + str(index["threshold"]) + '.tif')
-                    else:
+                            self.createTiffFromArray(
+                                image, indexImageArray, self.imagePath, newImageName)
+                            self.dlg.progressBar.setValue(
+                                self.dlg.progressBar.value() + self.singleIndexProgressValue)
+                            self.processCounter += 1
+
+                    if (self.getThresholdCheckbox(self.indexes.index(index)).isChecked() and self.processCounter >= 0):
+
+                        if (not index["selected"]):
+                            self.imagePath = self.layersData[self.dlg.layers_comboBox.currentIndex(
+                            )].dataProvider().dataSourceUri()
+
                         imageReclassifiedArray = self.reclassify(
-                            self.layersData[self.dlg.layers_comboBox.currentIndex(
-                            )].dataProvider().dataSourceUri(), index["threshold"])
+                            self.imagePath, index["threshold"])
 
                         if (not type(imageReclassifiedArray) is np.ndarray):
                             self.showModalDialog(
                                 "Warning: Reclassification image error", "Input reclassification image must have only one band", 2, True, False)
                         else:
-                            if (self.dlg.output_lineEdit.text() == ''):
-                                self.createTiffFromArray(image, imageReclassifiedArray, outputFolder.name + '/' + layerName + '_' +
-                                                         index["indexName"] + '_' + str(index["threshold"]) + '.tif', layerName + '_' + index["indexName"] + '_' + str(index["threshold"]) + '.tif')
-                            else:
-                                self.createTiffFromArray(image, imageReclassifiedArray, outputFolder + '/' + layerName + '_' +
-                                                         index["indexName"] + '_' + str(index["threshold"]) + '.tif', layerName + '_' + index["indexName"] + '_' + str(index["threshold"]) + '.tif')
-
+                            self.createTiffFromArray(image, imageReclassifiedArray, outputFolder + '/' + layerName + '_' +
+                                                     index["indexName"] + '_' + str(index["threshold"]) + '.tif', layerName + '_' + index["indexName"] + '_' + str(index["threshold"]) + '.tif')
                             self.dlg.progressBar.setValue(
                                 self.dlg.progressBar.value() + self.singleIndexProgressValue)
                             self.processCounter += 1
 
-            if (self.processCounter > 0):
-                pass
-            elif (self.processCounter == 0):
-                self.showModalDialog(
-                    "Warning: No option selected", "Select an index and/or threshold option", 2, True, False)
-            elif (self.processCounter > 0):
-                if (self.dlg.output_lineEdit.text() == ''):
-                    self.iface.messageBar().pushMessage(
-                        "Success", "Layer(s) created", level=Qgis.Success, duration=3)
-                else:
-                    self.iface.messageBar().pushMessage("Success", "Layer(s) created at: " +
-                                                        outputFolder, level=Qgis.Success, duration=3)
-                self.dlg.progressBar.setValue(100)
-                self.processCounter = 0
-                self.dlg.cancel_pushButton.setEnabled(False)
+                if (self.processCounter == 0):
+                    self.showModalDialog(
+                        "Warning: No option selected", "Select an index and/or threshold option", 2, True, False)
+                elif (self.processCounter > 0):
+                    if (self.dlg.output_lineEdit.text() == ''):
+                        self.iface.messageBar().pushMessage(
+                            "Success", "Layer(s) created", level=Qgis.Success, duration=3)
+                    else:
+                        self.iface.messageBar().pushMessage("Success", "Layer(s) created at: " +
+                                                            outputFolder, level=Qgis.Success, duration=3)
+                    self.dlg.progressBar.setValue(100)
+                    self.processCounter = 0
+                    self.dlg.cancel_pushButton.setEnabled(False)
 
         else:
             self.showModalDialog(
                 "Warning: No raster layer available", "Add a raster layer to your project", 2, True, False)
 
     def endAllProcesses(self):
+
+        # Restarts all the logic and UI variables in case of error or bad input parameters
         self.processCounter = -1
         self.dlg.progressBar.setValue(0)
         self.dlg.cancel_pushButton.setEnabled(False)
