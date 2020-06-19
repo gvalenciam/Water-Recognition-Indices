@@ -98,3 +98,8 @@ Notice that we could have selected any other index or threshold option for this 
 - The idea and development for this plugin was conceived as part of a founded [River research project in the Peruvian Amazon](https://www.moore.org/grant-detail?grantId=GBMF7711) conducted by [CITA - UTEC](https://cita.utec.edu.pe/). Help us improve by testing, giving feedback on bugs and bringing new ideas for better performance. We really appreciate your help :) !
 - Developed by: Gerardo Valencia Mesías, GIS Team CITA-UTEC
 - Contact emails: gvalencia@utec.edu.pe | cita@utec.edu.pe
+
+# Future Work
+
+- Add Text inputs for each band number (more versatility)
+- Add index formula to the disclaimer text
