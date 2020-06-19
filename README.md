@@ -89,6 +89,10 @@ Notice that we could have selected any other index or threshold option for this 
 
 # References
 
+- (NDVI index) [https://www.researchgate.net/publication/273520952_Ndvi_Vegetation_change_detection_using_remote_sensing_and_gis_-_A_case_study_of_Vellore_District]
+- (NDWI index) [https://www.researchgate.net/publication/232724072_Modification_of_Normalized_Difference_Water_Index_NDWI_to_Enhance_Open_Water_Features_in_Remotely_Sensed_Imagery]
+- (WRI index and others) [https://www.researchgate.net/publication/320869780_USING_WATER_INDICES_NDWI_MNDWI_NDMI_WRI_AND_AWEI_TO_DETECT_PHYSICAL_AND_CHEMICAL_PARAMETERS_BY_APPLY_REMOTE_SENSING_AND_GIS_TECHNIQUES]
+
 # Contributors
 
 - The idea and development for this plugin was conceived as part of a founded [River research project in the Peruvian Amazon](https://www.moore.org/grant-detail?grantId=GBMF7711) conducted by [CITA - UTEC](https://cita.utec.edu.pe/). Help us improve by testing, giving feedback on bugs and bringing new ideas for better performance. We really appreciate your help :) !
