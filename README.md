@@ -103,3 +103,4 @@ Notice that we could have selected any other index or threshold option for this 
 
 - Add Text inputs for each band number (more versatility)
 - Add index formula to the disclaimer text
+- Add Otsu threshold algorithm
