@@ -38,15 +38,15 @@ LOCALES =
 # translation
 SOURCES = \
 	__init__.py \
-	river_indexes.py river_indexes_dialog.py
+	raster_indices.py raster_indices_dialog.py
 
-PLUGINNAME = river_indexes
+PLUGINNAME = raster_indices
 
 PY_FILES = \
 	__init__.py \
-	river_indexes.py river_indexes_dialog.py
+	raster_indices.py raster_indices_dialog.py
 
-UI_FILES = river_indexes_dialog_base.ui
+UI_FILES = raster_indices_dialog_base.ui
 
 EXTRAS = metadata.txt icon.png
 

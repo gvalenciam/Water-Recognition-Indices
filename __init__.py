@@ -32,5 +32,5 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :type iface: QgsInterface
     """
     #
-    from .river_indexes import RiverIndexes
+    from .raster_indices import RiverIndexes
     return RiverIndexes(iface)

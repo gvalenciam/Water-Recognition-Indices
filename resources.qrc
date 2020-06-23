@@ -1,5 +1,5 @@
 <RCC>
-    <qresource prefix="/plugins/river_indexes" >
+    <qresource prefix="/plugins/raster_indices" >
         <file>icon.png</file>
     </qresource>
 </RCC>
